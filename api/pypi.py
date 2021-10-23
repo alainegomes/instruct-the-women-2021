@@ -8,13 +8,20 @@ import requests
 # https://docs.python-requests.org/en/master/user/quickstart/#json-response-content
 
 def version_exists(package_name, version):
-    # TODO
-    # Fazer requisição na API do PyPI para checar se a versão existe
+    print(package_name)
+    data = requests.get(f'https://pypi.org/pypi/{package_name}/json')
+    if data.status_code==404:
+        return False
+    if version in data.json()['releases'].keys():
+        return True
     return False
 
-
 def latest_version(package_name):
-    # TODO
-    # Fazer requisição na API do PyPI para descobrir a última versão
-    # de um pacote. Retornar None se o pacote não existir.
-    return "?"
+    
+    print(package_name)
+    data = requests.get(f'https://pypi.org/pypi/{package_name}/json')
+    print(data.status_code)
+    if data.status_code==404:
+        return None
+    return data.json()['info']['version']
+
