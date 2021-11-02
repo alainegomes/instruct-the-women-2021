@@ -19,6 +19,8 @@ class PackageSerializer(serializers.ModelSerializer):
             if not version_exists(data['name'], data['version']):
                 raise serializers.ValidationError()
         return data
+
+
 class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
@@ -27,9 +29,13 @@ class ProjectSerializer(serializers.ModelSerializer):
     packages = PackageSerializer(many=True)
 
     def create(self, validated_data):
-        
-        project = Project.objects.create(name=validated_data["name"])
+
         packages = validated_data["packages"]
+        #se o usuário passar dois pacotes com o mesmo nome irá receber um error
+        packagesname = [p['name'] for p in packages]
+        if len(set(packagesname)) != len(packagesname):
+            raise serializers.ValidationError({"error": "Pacotes repetidos"})
+        project = Project.objects.create(name=validated_data["name"])
         for i in packages:
             PackageRelease.objects.create(project=project, **i)
         return project
