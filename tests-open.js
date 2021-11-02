@@ -74,7 +74,7 @@ export default () => {
     check(mh, {
       "Apresenta mensagem de erro": (r) => {
         const data = responseToJson(r);
-        const expected = {"error": "One or more packages doesn't exist"};
+        const expected = {"error": "One or more packages doesn't exist or are duplicated"}; //alterei a mensagem 
         return shallowObjectCompare(expected, data);
       },
     });
